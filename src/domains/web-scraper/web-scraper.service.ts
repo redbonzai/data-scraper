@@ -4,6 +4,7 @@ import * as cheerio from 'cheerio';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ContactInfo } from '../database/entities/contact-info.entity';
+import { TelemetryService } from '../telemetry/telemetry.service';
 
 @Injectable()
 export class WebScraperService implements OnModuleInit, OnModuleDestroy {
@@ -12,6 +13,7 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
   constructor(
     @InjectRepository(ContactInfo)
     private readonly contactInfoRepository: Repository<ContactInfo>,
+    private readonly telemetryService: TelemetryService,
   ) {}
 
   async onModuleInit() {
@@ -19,7 +21,7 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
     this.browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      executablePath: '/usr/bin/chromium', // ✅ Ensure this path is correct
+      executablePath: '/usr/bin/chromium', // Ensure this path is correct
     });
   }
 
@@ -32,10 +34,14 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
 
   async scrapeWebsites(urls: string[]) {
     const page = await this.browser.newPage();
+    let successCount = 0;
+    let failCount = 0;
 
     for (const url of urls) {
       try {
         console.log(`Scraping: ${url}`);
+        const startTime = Date.now(); // ⏳ Start time
+
         await page.goto(url, { waitUntil: 'load', timeout: 60000 });
 
         const content = await page.content();
@@ -53,12 +59,39 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
         });
 
         await this.contactInfoRepository.save(contactInfo);
-        console.log(`Saved contact info from ${url}`);
+        console.log(`✅ Saved contact info from ${url}`);
+
+        // 📊 Push success metric
+        await this.telemetryService.pushMetric('scrape_success', 1, {
+          website: url,
+        });
+
+        successCount++;
+
+        // ⏳ Calculate and push processing time metric
+        const duration = Date.now() - startTime;
+        await this.telemetryService.pushMetric('scrape_duration', duration, {
+          website: url,
+        });
       } catch (error) {
-        console.error(`Error scraping ${url}:`, error);
+        console.error(`❌ Error scraping ${url}:`, error);
+
+        // 📊 Push failure metric
+        await this.telemetryService.pushMetric('scrape_failure', 1, {
+          website: url,
+        });
+
+        failCount++;
       }
     }
 
     await page.close();
+
+    // 📊 Push overall metrics
+    await this.telemetryService.pushMetric(
+      'scrape_total_success',
+      successCount,
+    );
+    await this.telemetryService.pushMetric('scrape_total_failure', failCount);
   }
 }
