@@ -1,9 +1,10 @@
+# ---- Stage 1: Build the Application ----
 FROM node:22-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Install necessary packages
+# Install necessary system dependencies for Chromium & Puppeteer
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -13,32 +14,35 @@ RUN apk add --no-cache \
     ttf-freefont \
     nodejs \
     npm \
-    bash
+    bash \
+    font-noto \
+    font-noto-cjk \
+    font-noto-emoji \
+    msttcorefonts-installer \
+    fontconfig \
+    udev \
+    tzdata
 
 # Set Puppeteer environment variables
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Copy package.json
+# Copy package.json and install dependencies
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install -g pnpm @nestjs/cli
 RUN pnpm install
 
-# Copy application files
+# Copy application files and build the application
 COPY . .
-
-# Build the application
 RUN pnpm run build
 
-# Create final runtime image
+# ---- Stage 2: Create Final Runtime Image ----
 FROM node:22-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install runtime dependencies
+# Install runtime dependencies for Chromium & Puppeteer
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -48,7 +52,14 @@ RUN apk add --no-cache \
     ttf-freefont \
     nodejs \
     npm \
-    bash
+    bash \
+    font-noto \
+    font-noto-cjk \
+    font-noto-emoji \
+    msttcorefonts-installer \
+    fontconfig \
+    udev \
+    tzdata
 
 # Set Puppeteer environment variables
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
@@ -57,7 +68,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 # Install pnpm and Nest CLI globally
 RUN npm install -g pnpm @nestjs/cli
 
-# Copy built files from previous stage
+# Copy built application files from the builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
@@ -65,8 +76,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY tsconfig.json ./
 COPY .env ./
 
-# Expose port
+# Expose application port
 EXPOSE 3050
 
-# Start the application
+# Set entrypoint for the application
 CMD ["node", "dist/main.js"]

@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - ./db_data:/var/lib/postgresql/data
-      - ./src/database/seeds/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+      - ./src/domains/database/seeds/seed.sql:/docker-entrypoint-initdb.d/seed.sql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
