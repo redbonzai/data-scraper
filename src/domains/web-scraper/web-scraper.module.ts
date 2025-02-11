@@ -4,11 +4,13 @@ import { WebScraperService } from './web-scraper.service';
 import { WebScraperController } from './web-scraper.controller';
 import { ContactInfo } from '../database/entities/contact-info.entity';
 import { DatabaseModule } from '../database/database.module';
+import { TelemetryModule } from '../telemetry/telemetry.module';
 
 @Module({
   imports: [
-    DatabaseModule, // ✅ Import DatabaseModule to access ContactInfo repository
-    TypeOrmModule.forFeature([ContactInfo]), // ✅ Explicitly register ContactInfo
+    DatabaseModule,
+    TypeOrmModule.forFeature([ContactInfo]),
+    TelemetryModule,
   ],
   controllers: [WebScraperController],
   providers: [WebScraperService],

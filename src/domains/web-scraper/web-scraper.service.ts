@@ -20,8 +20,15 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
     console.log('Starting Puppeteer...');
     this.browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      executablePath: '/usr/bin/chromium', // Ensure this path is correct
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--disable-software-rasterizer',
+        '--disable-accelerated-2d-canvas',
+      ],
+      executablePath: '/usr/bin/chromium',
     });
   }
 
@@ -62,36 +69,36 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
         console.log(`✅ Saved contact info from ${url}`);
 
         // 📊 Push success metric
-        await this.telemetryService.pushMetric('scrape_success', 1, {
-          website: url,
-        });
+        // await this.telemetryService.pushMetric('scrape_success', 1, {
+        //   website: url,
+        // });
 
         successCount++;
 
         // ⏳ Calculate and push processing time metric
         const duration = Date.now() - startTime;
-        await this.telemetryService.pushMetric('scrape_duration', duration, {
-          website: url,
-        });
+        // await this.telemetryService.pushMetric('scrape_duration', duration, {
+        //   website: url,
+        // });
       } catch (error) {
         console.error(`❌ Error scraping ${url}:`, error);
 
         // 📊 Push failure metric
-        await this.telemetryService.pushMetric('scrape_failure', 1, {
-          website: url,
-        });
+        // await this.telemetryService.pushMetric('scrape_failure', 1, {
+        //   website: url,
+        // });
 
-        failCount++;
+        // failCount++;
       }
     }
 
     await page.close();
 
     // 📊 Push overall metrics
-    await this.telemetryService.pushMetric(
-      'scrape_total_success',
-      successCount,
-    );
-    await this.telemetryService.pushMetric('scrape_total_failure', failCount);
+    // await this.telemetryService.pushMetric(
+    //   'scrape_total_success',
+    //   successCount,
+    // );
+    // await this.telemetryService.pushMetric('scrape_total_failure', failCount);
   }
 }

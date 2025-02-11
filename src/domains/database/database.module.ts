@@ -30,7 +30,7 @@ import { ContactInfo } from './entities/contact-info.entity';
         synchronize: true, // ⚠️ For development only
       }),
     }),
-    TypeOrmModule.forFeature([ContactInfo]), // ✅ Add this
+    TypeOrmModule.forFeature([ContactInfo]),
   ],
   exports: [TypeOrmModule, TypeOrmModule.forFeature([ContactInfo])], // ✅ Export repository
 })
