@@ -77,7 +77,7 @@ This will:
 ### **3.5 Verify Database Setup**
 To confirm that the database and sample data were created:
 ```bash
-docker exec -it contact-db psql -U user -d contactdb -c "SELECT * FROM \"contact-info\";"
+docker exec -it local psql -U user -d contactdb -c "SELECT * FROM \"contact-info\";"
 ```
 This should return the pre-seeded sample contact information.
 
