@@ -36,6 +36,11 @@ POSTGRES_DB=local
 BING_API_KEY=your_bing_api_key
 BING_SEARCH_URL=https://api.bing.microsoft.com/v7.0/search
 
+# Google Search API
+GOOGLE_API_KEY=google_api_key
+GOOGLE_SEARCH_ENGINE_ID=google_search_engine_id
+GOOGLE_SEARCH_URL=https://www.googleapis.com/customsearch/v1
+
 # Observe Inc. Telemetry
 OBSERVE_CUSTOMER=your_observe_customer_id
 OBSERVE_TOKEN=your_observe_ingest_token
@@ -44,18 +49,21 @@ OBSERVE_DATASTREAM=your_datastream_name
 
 ### **3.3 Secrets Table**
 
-| Secret Name           | Sample Value                                 | Description                                      |
-|----------------------|----------------------------------------------|--------------------------------------------------|
-| `DB_HOST`           | `postgres`                                   | PostgreSQL database host                         |
-| `DB_PORT`           | `5432`                                       | PostgreSQL database port                         |
-| `POSTGRES_USER`     | `postgres`                                   | PostgreSQL username                              |
-| `POSTGRES_PASSWORD` | `local`                                      | PostgreSQL password                              |
-| `POSTGRES_DB`       | `local`                                      | PostgreSQL database name                         |
-| `BING_API_KEY`      | `your_bing_api_key`                          | API key for Bing Search API                      |
-| `BING_SEARCH_URL`   | `https://api.bing.microsoft.com/v7.0/search` | Bing Search API endpoint                        |
-| `OBSERVE_CUSTOMER`  | `your_observe_customer_id`                   | Observe Inc. customer ID                         |
-| `OBSERVE_TOKEN`     | `your_observe_ingest_token`                  | Observe Inc. API token for telemetry            |
-| `OBSERVE_DATASTREAM`| `your_datastream_name`                       | Observe Inc. datastream for telemetry           |
+| Secret Name               | Sample Value                                 | Description                                      |
+|---------------------------|----------------------------------------------|--------------------------------------------------|
+| `DB_HOST`                 | `postgres`                                   | PostgreSQL database host                         |
+| `DB_PORT`                 | `5432`                                       | PostgreSQL database port                         |
+| `POSTGRES_USER`           | `postgres`                                   | PostgreSQL username                              |
+| `POSTGRES_PASSWORD`       | `local`                                      | PostgreSQL password                              |
+| `POSTGRES_DB`             | `local`                                      | PostgreSQL database name                         |
+| `BING_API_KEY`            | `Bing API KEY`                               | API key for Bing Search API                      |
+| `BING_SEARCH_URL`         | `https://api.bing.microsoft.com/v7.0/search` | Bing Search API endpoint                        |
+| `GOOGLE_API_KEY`          | `Google API KEY`                             | Bing Search API endpoint                        |
+| `GOOGLE_SEARCH_ENGINE_ID` | `Google Search Engine ID`                    | Bing Search API endpoint                        |
+| `GOOGLE_SEARCH_URL`       | `https://www.googleapis.com/customsearch/v1` | Bing Search API endpoint                        |
+| `OBSERVE_CUSTOMER`        | `your_observe_customer_id`                   | Observe Inc. customer ID                         |
+| `OBSERVE_TOKEN`           | `your_observe_ingest_token`                  | Observe Inc. API token for telemetry            |
+| `OBSERVE_DATASTREAM`      | `your_datastream_name`                       | Observe Inc. datastream for telemetry           |
 
 ### **3.4 Running the Application in Docker**
 ```bash

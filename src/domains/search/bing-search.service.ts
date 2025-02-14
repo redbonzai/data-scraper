@@ -5,10 +5,10 @@ import { BingSearchResponse } from './interfaces/bing.interface';
 import { TelemetryService } from '../telemetry/telemetry.service';
 
 @Injectable()
-export class SearchService {
+export class BingSearchService {
   private readonly BING_API_KEY: string;
   private readonly BING_SEARCH_URL: string;
-  private readonly logger = new Logger(SearchService.name);
+  private readonly logger = new Logger(BingSearchService.name);
 
   constructor(
     private readonly configService: ConfigService,

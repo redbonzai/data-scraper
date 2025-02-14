@@ -54,9 +54,18 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
         const content = await page.content();
         const $ = cheerio.load(content);
 
-        const phone = $('a[href^="tel:"]').text().trim() || '';
-        const email = $('a[href^="mailto:"]').text().trim() || '';
-        const address = $('address').text().trim() || '';
+        const phone =
+          $('a[href^="tel:"]').first().text().replace(/\D+/g, '').trim() || '';
+        const email =
+          $('a[href^="mailto:"]')
+            .map((_, el) => $(el).attr('href')?.replace('mailto:', '').trim())
+            .get()
+            .join(', ') || '';
+        const address =
+          $('address, div:contains("Address"), p:contains("Address")')
+            .first()
+            .text()
+            .trim() || '';
 
         const contactInfo = this.contactInfoRepository.create({
           website: url,
@@ -69,36 +78,36 @@ export class WebScraperService implements OnModuleInit, OnModuleDestroy {
         console.log(`✅ Saved contact info from ${url}`);
 
         // 📊 Push success metric
-        // await this.telemetryService.pushMetric('scrape_success', 1, {
-        //   website: url,
-        // });
+        await this.telemetryService.pushMetric('scrape_success', 1, {
+          website: url,
+        });
 
         successCount++;
 
         // ⏳ Calculate and push processing time metric
         const duration = Date.now() - startTime;
-        // await this.telemetryService.pushMetric('scrape_duration', duration, {
-        //   website: url,
-        // });
+        await this.telemetryService.pushMetric('scrape_duration', duration, {
+          website: url,
+        });
       } catch (error) {
         console.error(`❌ Error scraping ${url}:`, error);
 
         // 📊 Push failure metric
-        // await this.telemetryService.pushMetric('scrape_failure', 1, {
-        //   website: url,
-        // });
+        await this.telemetryService.pushMetric('scrape_failure', 1, {
+          website: url,
+        });
 
-        // failCount++;
+        failCount++;
       }
     }
 
     await page.close();
 
     // 📊 Push overall metrics
-    // await this.telemetryService.pushMetric(
-    //   'scrape_total_success',
-    //   successCount,
-    // );
-    // await this.telemetryService.pushMetric('scrape_total_failure', failCount);
+    await this.telemetryService.pushMetric(
+      'scrape_total_success',
+      successCount,
+    );
+    await this.telemetryService.pushMetric('scrape_total_failure', failCount);
   }
 }
