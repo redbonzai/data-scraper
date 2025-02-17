@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-scraper
+  labels:
+    app: data-scraper
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-scraper
+  template:
+    metadata:
+      labels:
+        app: data-scraper
+    spec:
+      containers:
+      - name: data-scraper
+        image: data-scraper:dev
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3050
+        env:
+        - name: NODE_ENV
+          value: dev
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      
