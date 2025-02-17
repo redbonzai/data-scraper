@@ -38,6 +38,7 @@
     "cheerio": "^1.0.0",
     "joi": "^17.13.3",
     "nestjs-pino": "^4.3.0",
+    "newrelic": "^12.13.0",
     "pg": "^8.13.1",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
@@ -96,5 +97,21 @@
     "moduleNameMapper": {
       "^@app/logger(|/.*)$": "<rootDir>/libs/logger/src/$1"
     }
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@nestjs/core",
+      "@swc/core",
+      "nestjs-pino",
+      "puppeteer"
+    ],
+    "onlyBuiltDependencies": [
+      "@contrast/fn-inspect",
+      "@nestjs/core",
+      "@newrelic/native-metrics",
+      "nestjs-pino",
+      "protobufjs",
+      "puppeteer"
+    ]
   }
 }

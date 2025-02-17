@@ -39,5 +39,7 @@ import { LogFilterTransport } from './transports/log-filter.transport';
       },
     }),
   ],
+  providers: [LogFilterTransport],
+  exports: [LogFilterTransport],
 })
 export class LoggerModule {}

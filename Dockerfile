@@ -1,5 +1,8 @@
-# ---- Stage 1: Build the Application ----
 FROM node:22-alpine AS builder
+ENV NEW_RELIC_NO_CONFIG_FILE=true
+ENV NEW_RELIC_APP_NAME="web-data-scrape"
+ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
+ENV NEW_RELIC_LOG=stdout
 
 # Set working directory
 WORKDIR /app
