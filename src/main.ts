@@ -17,3 +17,4 @@ async function bootstrap() {
   logger.log(`Data Scraper is running on port: ${port}`, 'MAIN.ts');
 }
 bootstrap();
+
